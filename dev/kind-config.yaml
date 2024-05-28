@@ -5,3 +5,7 @@ nodes:
   extraMounts:
   - hostPath: /home/andriy/projects/my-little-storage/dev/mount
     containerPath: /pv-data
+  extraPortMappings:
+    - containerPort: 30256
+      hostPort: 30256
+      listenAddress: "127.0.0.1"
