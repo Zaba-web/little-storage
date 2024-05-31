@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-db
+  name: user
   labels:
-    app: user-db
+    app: user
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: user-db
+      app: user
   template:
     metadata:
       labels:
-        app: user-db
+        app: user
     spec:
       containers:
-      - name: postgres
-        image: postgres:latest
+      - name: user-service-app
+        image: zaba837/ls-user-service:latest
         ports:
-          - containerPort: 5432
+          - containerPort: 4000
         env:
           - name: POSTGRES_PASSWORD
             valueFrom:
               configMapKeyRef:
                 name: user-db-config
-                key: POSTGRES_PASSWORD 
+                key: POSTGRES_PASSWORD
           - name: POSTGRES_USER
             valueFrom:
               configMapKeyRef:
@@ -35,10 +35,9 @@ spec:
               configMapKeyRef:
                 name: user-db-config
                 key: POSTGRES_DB
-        volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: user-db-volume
-      volumes:
-        - name: user-db-volume
-          persistentVolumeClaim:
-            claimName: user-db-volume-claim    
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: user-db-config
+                key: POSTGRES_HOST
+        imagePullPolicy: Always
