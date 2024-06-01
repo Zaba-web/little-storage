@@ -7,8 +7,8 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
-RUN go build -v -o /usr/local/bin/app ./...
+RUN go build -v -o /usr/src/app/ .
 
 EXPOSE 8181
 
-CMD ["app"]
+CMD ["/usr/src/app/gateway-service"]
