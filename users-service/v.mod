@@ -3,5 +3,5 @@ Module {
 	description: 'Little Storage User Service'
 	version: '0.0.0'
 	license: 'GPL-2.0'
-	dependencies: []
+	dependencies: ['elitru.jwt']
 }

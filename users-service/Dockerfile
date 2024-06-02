@@ -1,19 +1,10 @@
-# Minimal image for compiling V programs
-# - No UI dependencies
-# - gcc compiler (only works on alpine)
-
 ARG USER=thevlang
-# Stage 1 - Build the V-compiler
+
 FROM ${USER}/vlang:alpine-build AS builder
 
 WORKDIR /opt/vlang
 
 RUN git clone --depth 1 https://github.com/vlang/v /opt/vlang && make VFLAGS='-cc gcc' && v -version
-
-# Stage 2 - Make minimal runtime without git and make
-#           we still nedd gcc and musl-dev for v to compile;
-#           libexecinfo is needed for the bundled tcc to work;
-#           libc-dev is needed for the various C headers like inttypes.h .
 
 FROM ${USER}/vlang:alpine-base AS runtime
 
@@ -21,9 +12,7 @@ ENV VFLAGS="-cc gcc"
 
 RUN apk --no-cache add \
     gcc musl-dev git libc-dev postgresql-dev
-# libexecinfo-static libexecinfo-dev : was removed since Alpine 3.17, check if still needed or remove this line
 
-# Copy the prebuilt V compiler
 COPY --from=builder /opt/vlang /opt/vlang
 
 WORKDIR /appcode
@@ -31,5 +20,7 @@ WORKDIR /appcode
 COPY . .
 
 EXPOSE 4000
+
+RUN v install
 
 ENTRYPOINT ["v", "run", "/appcode/src/"]
