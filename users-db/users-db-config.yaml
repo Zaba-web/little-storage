@@ -7,3 +7,4 @@ data:
   POSTGRES_USER: "user_default"
   POSTGRES_PASSWORD: "password_default"
   POSTGRES_HOST: "user-db"
+  JWT_SALT: "salt_default"
