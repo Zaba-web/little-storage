@@ -40,4 +40,9 @@ spec:
               configMapKeyRef:
                 name: user-db-config
                 key: POSTGRES_HOST
+          - name: JWT_SALT
+            valueFrom:
+              configMapKeyRef:
+                name: user-db-config
+                key: JWT_SALT
         imagePullPolicy: Always
