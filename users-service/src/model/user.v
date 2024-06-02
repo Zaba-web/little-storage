@@ -43,6 +43,20 @@ pub fn User.load_by_creds(creds UserCreds, db pg.DB) User {
 	return user.first()
 }
 
+pub fn User.get_by_id(id int, db pg.DB) User {
+	user := sql db {
+		select from User where id == id
+	} or {
+		return User{}
+	}
+
+	if user.len == 0 {
+		return User{}
+	}
+
+	return user.first()
+}
+
 pub fn (u User) is_already_registered(db pg.DB) bool {
 	found_result := sql db {
 		select from User where email == u.email
@@ -61,6 +75,16 @@ pub fn (mut u User) save(db pg.DB) int {
 	}
 
 	return 0
+}
+
+pub fn (u User) approve(db pg.DB) bool {
+	sql db {
+		update User set approved = true where id == u.id
+	} or {
+		return false
+	}
+
+	return true
 }
 
 fn (u User) create_new(db pg.DB) int {

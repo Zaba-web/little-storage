@@ -46,6 +46,24 @@ fn (mut app App) login() vweb.Result {
 
 	token_pair := model.create_token_pair(user, app.db)
 
-	app.set_status(ok, "Created")
+	app.set_status(ok, "OK")
 	return app.json(SimpleResponse{ok, json.encode(token_pair)})
+}
+
+@['/approve/:id'; put]
+fn (mut app App) approve(id int) vweb.Result {
+	user := model.User.get_by_id(id, app.db)
+
+	if user.id == 0 {
+		app.set_status(not_found, "Not found")
+		return app.json(SimpleResponse{not_found, "User not found"})
+	}
+
+	if !user.approve(app.db) {
+		app.set_status(internal_error, "Internal error")
+		return app.json(SimpleResponse{internal_error, "Can't approve user"})
+	}
+
+	app.set_status(ok, "OK")
+	return app.json(SimpleResponse{ok, "User approved"})
 }

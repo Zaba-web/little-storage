@@ -10,6 +10,7 @@ const (
 	internal_error = 500
 	created = 204
 	ok = 200
+	not_found = 404
 	conflict = 409
 	unauthorized = 401
 	forbidden = 403
