@@ -67,3 +67,18 @@ fn (mut app App) approve(id int) vweb.Result {
 	app.set_status(ok, "OK")
 	return app.json(SimpleResponse{ok, "User approved"})
 }
+
+@['/auth'; get]
+fn (mut app App) auth() vweb.Result {
+	authorization := app.get_header("Authorization")
+	// format is Authorization: Bearer token
+	token := authorization[7..]
+
+	result := model.parse_token<model.AccessClaims>(token) or {
+		app.set_status(unauthorized, "Unauthorized")
+		return app.json(SimpleResponse{unauthorized, "user: {}"})
+	}
+
+	app.set_status(ok, "OK")
+	return app.json(SimpleResponse{ok, "user: ${json.encode(result)}"})
+}

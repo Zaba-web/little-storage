@@ -8,7 +8,7 @@ const access_token_lifetime = 60 * 60 // one hour
 const refresh_token_lifetime = 60 * 60 * 24 * 7 // one week
 const jwt_salt = os.getenv("JWT_SALT")
 
-struct AccessClaims {
+pub struct AccessClaims {
 	id int
 	email string
 	first_name string
@@ -16,7 +16,7 @@ struct AccessClaims {
 	created_at string
 }
 
-struct RefreshClaims {
+pub struct RefreshClaims {
 	id int
 }
 
@@ -57,4 +57,12 @@ pub fn create_token_pair(user User, db pg.DB) TokenPair {
 		access: access_token
 		refresh: refresh_token
 	}
+}
+
+pub fn parse_token<T>(token string) !T {
+	alg := jwt.new_algorithm(jwt.AlgorithmType.hs256)
+
+	result := jwt.verify<T>(token, alg, jwt_salt)!
+
+	return result
 }
