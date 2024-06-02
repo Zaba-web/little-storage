@@ -1,6 +1,7 @@
 # Binaries for programs and plugins
 main
 users_service
+user-service
 *.exe
 *.exe~
 *.so

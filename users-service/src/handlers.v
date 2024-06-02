@@ -24,3 +24,28 @@ fn (mut app App) create() vweb.Result {
 	app.set_status(created, "Created")
 	return app.json(SimpleResponse{created, "Created"})
 }
+
+@['/login'; post]
+fn (mut app App) login() vweb.Result {
+	mut user_data := json.decode(model.UserCreds, app.req.data) or {
+		app.set_status(bad_request, "Bad request")
+		return app.json(SimpleResponse{bad_request, "Provide email and password to log in"})
+	}
+
+	user := model.User.load_by_creds(user_data, app.db)
+
+	if user.id == 0 {
+		app.set_status(unauthorized, "Unauthorized")
+		return app.json(SimpleResponse{unauthorized, "Invalid email or password"})
+	}
+
+	if !user.approved {
+		app.set_status(forbidden,"Forbidden")
+		return app.json(SimpleResponse{forbidden, "Your account haven't been approved yet"})
+	}
+
+	token_pair := model.create_token_pair(user, app.db)
+
+	app.set_status(ok, "Created")
+	return app.json(SimpleResponse{ok, json.encode(token_pair)})
+}
