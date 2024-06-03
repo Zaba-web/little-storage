@@ -14,5 +14,5 @@ const (
 
 func setupUserRoutes(a *fiber.App) {
 	USER := a.Group("user")
-	USER.Post("/", proxy.Forward(fmt.Sprintf("%s%s", config.USER_SERVICE, USER_CREATE_ROUTE)))
+	USER.Post("/register", proxy.Forward(fmt.Sprintf("%s%s", config.USER_SERVICE, USER_CREATE_ROUTE)))
 }

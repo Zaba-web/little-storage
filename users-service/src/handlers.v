@@ -4,7 +4,7 @@ import vweb
 import model
 import json
 
-@['/user'; post]
+@['/register'; post]
 fn (mut app App) create() vweb.Result {
 	mut user := json.decode(model.User, app.req.data) or {
 		app.set_status(bad_request, "Bad request")
@@ -71,6 +71,12 @@ fn (mut app App) approve(id int) vweb.Result {
 @['/auth'; get]
 fn (mut app App) auth() vweb.Result {
 	authorization := app.get_header("Authorization")
+
+	if authorization.len == 0 {
+		app.set_status(unauthorized, "Unauthorized")
+		return app.json(SimpleResponse{unauthorized, "Invalid refresh token"})
+	}
+
 	// format is Authorization: Bearer token
 	token := authorization[7..]
 
@@ -81,4 +87,37 @@ fn (mut app App) auth() vweb.Result {
 
 	app.set_status(ok, "OK")
 	return app.json(SimpleResponse{ok, "user: ${json.encode(result)}"})
+}
+
+@['/refresh'; post]
+fn (mut app App) exchange_refresh() vweb.Result {
+	refresh := app.get_header("Refresh")
+
+	if refresh.len == 0 {
+		app.set_status(unauthorized, "Unauthorized")
+		return app.json(SimpleResponse{unauthorized, "Invalid refresh token"})
+	}
+
+	token := refresh[7..]
+
+	refresh_token := model.RefreshToken.load(token, app.db) or {
+		app.set_status(unauthorized, "Unauthorized")
+		return app.json(SimpleResponse{unauthorized, "Invalid refresh token"})
+	}
+
+	defer {
+		refresh_token.delete(app.db)
+	}
+
+	user := model.User.get_by_id(refresh_token.user_id, app.db)
+
+	if user.id == 0 {
+		app.set_status(unauthorized, "Unauthorized")
+		return app.json(SimpleResponse{unauthorized, "Invalid refresh token"})
+	}
+
+	token_pair := model.create_token_pair(user, app.db)
+
+	app.set_status(ok, "OK")
+	return app.json(SimpleResponse{ok, json.encode(token_pair)})
 }
