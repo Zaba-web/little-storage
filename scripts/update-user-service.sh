@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl set image deployment user gateway=zaba837/ls-user-service:$1
+kubectl set image deployment user user-service-app=zaba837/ls-user-service:$1
