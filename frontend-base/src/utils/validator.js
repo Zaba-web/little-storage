@@ -13,5 +13,5 @@ export const validators = {
 }
 
 export const validate = (rules, value) => {
-  return rules.map(r => r(value)).filter(msg => msg != null)
+  return rules.map(r => r(value)).filter(msg => (msg != null && msg != ''))
 }

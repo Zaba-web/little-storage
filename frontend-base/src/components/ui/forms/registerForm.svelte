@@ -2,8 +2,17 @@
   import { __ } from "../../../utils/transalte";
   import FormInput from "./form-input.svelte";
   import { validators } from "../../../utils/validator";
+  import { createUser, CREATED, ALREADY_EXISTS } from "../../../api/userClient";
 
+  $: formValid = false;
   $: step = 1;
+  $: validFields = {
+    email: false,
+    first_name: false,
+    last_name: false,
+    password: false,
+    password_confirm: false,
+  };
   $: formData = {
     email: "",
     first_name: "",
@@ -23,12 +32,31 @@
     step = newStep;
   };
 
+  const validationChanged = (id, validStatus) => {
+    validFields[id] = validStatus;
+    validFields = { ...validFields };
+    formValid = Object.keys(validFields).every((key) => validFields[key]);
+  };
+
   const sendForm = (e) => {
-    console.log(e);
+    if (formValid) {
+      (async () => {
+        const result = await createUser(formData);
+
+        if (result == CREATED) {
+          // TODO: show created popup
+          alert("Registered");
+        } else if (result == ALREADY_EXISTS) {
+          alert("User this this email already registers");
+        } else {
+          alert("Unknown error occured");
+        }
+      })();
+    }
   };
 </script>
 
-<form method="POST" action="/user/register" on:submit|preventDefault={sendForm}>
+<form method="POST" on:submit|preventDefault={sendForm}>
   <div class="w-full overflow-clip mt-2">
     <div
       class="w-[200%] flex gap-4 transition-all {step == 2 &&
@@ -42,6 +70,8 @@
           id="email"
           validationRules={[validators.minLength(5), validators.maxLength(255)]}
           on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
+          on:validation-update={(e) =>
+            validationChanged(e.detail.id, e.detail.valid)}
         />
 
         <FormInput
@@ -51,6 +81,8 @@
           id="first_name"
           validationRules={[validators.minLength(1), validators.maxLength(255)]}
           on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
+          on:validation-update={(e) =>
+            validationChanged(e.detail.id, e.detail.valid)}
         />
 
         <FormInput
@@ -60,6 +92,8 @@
           id="last_name"
           validationRules={[validators.minLength(1), validators.maxLength(255)]}
           on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
+          on:validation-update={(e) =>
+            validationChanged(e.detail.id, e.detail.valid)}
         />
       </div>
       <div class="w-full">
@@ -70,6 +104,8 @@
           id="password"
           validationRules={[validators.minLength(8), validators.maxLength(255)]}
           on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
+          on:validation-update={(e) =>
+            validationChanged(e.detail.id, e.detail.valid)}
         />
 
         <FormInput
@@ -83,6 +119,8 @@
             validators.sameAs(formData.password, "Password", "confirmation"),
           ]}
           on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
+          on:validation-update={(e) =>
+            validationChanged(e.detail.id, e.detail.valid)}
         />
       </div>
     </div>
@@ -98,7 +136,9 @@
       </button>
     </div>
     <div class={step == 1 && "hidden"}>
-      <button class="button button-accent" type="submit"> Send </button>
+      <button class="button button-accent" type="submit" disabled={!formValid}>
+        Send
+      </button>
     </div>
     <div class={step != 1 && "hidden"}>
       <button

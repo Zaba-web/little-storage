@@ -19,7 +19,9 @@
     if (validationRules) {
       errorMessages = validate(validationRules, value);
       if (errorMessages.length != 0) {
-        dispatch("validation-error");
+        dispatch("validation-update", { id: id, valid: false });
+      } else {
+        dispatch("validation-update", { id: id, valid: true });
       }
     }
 
