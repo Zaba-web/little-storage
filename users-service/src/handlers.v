@@ -6,6 +6,8 @@ import json
 
 @['/register'; post]
 fn (mut app App) create() vweb.Result {
+	app.add_header("Access-Control-Allow-Origin", "*")
+
 	mut user := json.decode(model.User, app.req.data) or {
 		app.set_status(bad_request, "Bad request")
 		return app.json(SimpleResponse{bad_request, "Check your input data"})
@@ -27,6 +29,8 @@ fn (mut app App) create() vweb.Result {
 
 @['/login'; post]
 fn (mut app App) login() vweb.Result {
+	app.add_header("Access-Control-Allow-Origin", "*")
+
 	mut user_data := json.decode(model.UserCreds, app.req.data) or {
 		app.set_status(bad_request, "Bad request")
 		return app.json(SimpleResponse{bad_request, "Provide email and password to log in"})
@@ -52,6 +56,8 @@ fn (mut app App) login() vweb.Result {
 
 @['/approve/:id'; put]
 fn (mut app App) approve(id int) vweb.Result {
+	app.add_header("Access-Control-Allow-Origin", "*")
+
 	user := model.User.get_by_id(id, app.db)
 
 	if user.id == 0 {
@@ -71,6 +77,8 @@ fn (mut app App) approve(id int) vweb.Result {
 @['/auth'; get]
 fn (mut app App) auth() vweb.Result {
 	authorization := app.get_header("Authorization")
+
+	app.add_header("Access-Control-Allow-Origin", "*")
 
 	if authorization.len == 0 {
 		app.set_status(unauthorized, "Unauthorized")
@@ -92,6 +100,8 @@ fn (mut app App) auth() vweb.Result {
 @['/refresh'; post]
 fn (mut app App) exchange_refresh() vweb.Result {
 	refresh := app.get_header("Refresh")
+
+	app.add_header("Access-Control-Allow-Origin", "*")
 
 	if refresh.len == 0 {
 		app.set_status(unauthorized, "Unauthorized")

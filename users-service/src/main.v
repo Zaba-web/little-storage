@@ -17,7 +17,7 @@ fn main() {
 	db := get_database()
 	model.init_tables(db)
 
-	app := &App{
+	mut app := &App{
 		db: db
 	}
 
