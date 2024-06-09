@@ -1,77 +1,117 @@
 <script>
   import { __ } from "../../../utils/transalte";
+  import FormInput from "./form-input.svelte";
+  import { validators } from "../../../utils/validator";
+
+  $: step = 1;
+  $: formData = {
+    email: "",
+    first_name: "",
+    last_name: "",
+    password: "",
+    password_confirm: "",
+  };
+
+  const updateFormData = (id, val) => {
+    formData[id] = val;
+    formData = {
+      ...formData,
+    };
+  };
+
+  const changeStep = (newStep) => {
+    step = newStep;
+  };
+
+  const sendForm = (e) => {
+    console.log(e);
+  };
 </script>
 
-<form>
-  <div class="w-full">
-    <div class="w-full">
-      <div class="mt-4 w-full">
-        <label
-          for="email"
-          class="block font-theme-default text-theme-gray font-semibold mb-1"
-          >Email</label
-        >
-        <input
-          class="input-field"
+<form method="POST" action="/user/register" on:submit|preventDefault={sendForm}>
+  <div class="w-full overflow-clip mt-2">
+    <div
+      class="w-[200%] flex gap-4 transition-all {step == 2 &&
+        'register-step-2'}"
+    >
+      <div class="w-full">
+        <FormInput
+          label={__("Email")}
+          placeholder={__("Enter your email")}
           type="email"
           id="email"
-          placeholder={__("Enter your email")}
+          validationRules={[validators.minLength(5), validators.maxLength(255)]}
+          on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
         />
-      </div>
-      <div class="mt-4 w-full">
-        <label
-          for="firstName"
-          class="block font-theme-default text-theme-gray font-semibold mb-1"
-          >First name</label
-        >
-        <input
-          class="input-field"
-          type="text"
-          id="firstName"
+
+        <FormInput
+          label={__("First name")}
           placeholder={__("Enter your name")}
-        />
-      </div>
-      <div class="mt-4 w-full">
-        <label
-          for="lastName"
-          class="block font-theme-default text-theme-gray font-semibold mb-1"
-          >Last name</label
-        >
-        <input
-          class="input-field"
           type="text"
-          id="lastName"
+          id="first_name"
+          validationRules={[validators.minLength(1), validators.maxLength(255)]}
+          on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
+        />
+
+        <FormInput
+          label={__("Last name")}
           placeholder={__("Enter your surname")}
+          type="text"
+          id="last_name"
+          validationRules={[validators.minLength(1), validators.maxLength(255)]}
+          on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
         />
       </div>
-    </div>
-    <div class="w-full">
-      <div class="mt-4 w-full">
-        <label
-          for="password"
-          class="block font-theme-default text-theme-gray font-semibold mb-1"
-          >Last name</label
-        >
-        <input
-          class="input-field"
+      <div class="w-full">
+        <FormInput
+          label={__("Password")}
+          placeholder={__("Enter your password")}
           type="password"
           id="password"
-          placeholder={__("Enter your password")}
+          validationRules={[validators.minLength(8), validators.maxLength(255)]}
+          on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
         />
-      </div>
-      <div class="mt-4 w-full">
-        <label
-          for="password_confirm"
-          class="block font-theme-default text-theme-gray font-semibold mb-1"
-          >Confirm password</label
-        >
-        <input
-          class="input-field"
+
+        <FormInput
+          label={__("Password confirmation")}
+          placeholder={__("Repeat your password")}
           type="password"
           id="password_confirm"
-          placeholder={__("Enter your password again")}
+          validationRules={[
+            validators.minLength(8),
+            validators.maxLength(255),
+            validators.sameAs(formData.password, "Password", "confirmation"),
+          ]}
+          on:value-changed={(e) => updateFormData(e.detail.id, e.detail.value)}
         />
       </div>
     </div>
   </div>
+  <div class="mt-4 flex justify-between">
+    <div class={step == 1 && "hidden"}>
+      <button
+        class="button button-regular"
+        type="button"
+        on:click={() => changeStep(1)}
+      >
+        Back
+      </button>
+    </div>
+    <div class={step == 1 && "hidden"}>
+      <button class="button button-accent" type="submit"> Send </button>
+    </div>
+    <div class={step != 1 && "hidden"}>
+      <button
+        class="button button-regular"
+        type="button"
+        on:click={() => changeStep(2)}>Next</button
+      >
+    </div>
+  </div>
 </form>
+
+<style>
+  .register-step-2 {
+    transform: translateX(-51%);
+  }
+</style>

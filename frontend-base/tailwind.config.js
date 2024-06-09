@@ -12,7 +12,8 @@ export default {
           75: "#191924",
           100: "#0f0f0f"
         },
-        "theme-gray": '#d9d9d9'
+        "theme-gray": '#d9d9d9',
+        "theme-accent": '#4f52bf'
       },
       fontFamily: {
         "theme-default": ["Noto Sans"]

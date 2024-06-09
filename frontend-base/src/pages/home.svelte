@@ -5,7 +5,7 @@
 </script>
 
 <FullScreenContainer bgColor="theme-dark-50">
-  <div class="px-16 py-12 min-w-96 bg-theme-dark-100">
+  <div class="px-16 py-12 w-96 bg-theme-dark-100">
     <h1 class="text-white font-theme-default font-regular text-xl">
       {__("Request Membership")}
     </h1>

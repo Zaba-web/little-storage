@@ -6,7 +6,17 @@
 
 @layer components {
   .input-field {
-    @apply w-full drop-shadow-sm rounded-md p-1 bg-transparent outline-none border-theme-dark-75 border-2 px-2 text-white active:border-white focus:border-theme-gray
+    @apply w-full drop-shadow-sm rounded-md px-4 py-2 bg-transparent outline-none border-theme-dark-75 
+    border-2 text-white active:border-white focus:border-theme-gray
+  }
+  .button {
+    @apply py-2 px-8 cursor-pointer rounded-lg text-white font-medium font-theme-default transition-all drop-shadow-md
+  }
+  .button-regular {
+    @apply bg-theme-dark-50 hover:bg-theme-dark-75
+  }
+  .button-accent {
+    @apply bg-theme-accent hover:bg-theme-gray hover:text-theme-dark-50
   }
 }
 
@@ -14,3 +24,4 @@
   margin: 0;
   padding: 0;
 }
+
