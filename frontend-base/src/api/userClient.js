@@ -27,8 +27,17 @@ export const login = async userCreds => {
   }
 }
 
+export const logout = () => {
+  resetData();
+}
+
 const saveUserData = (response) => {
   const tokens = JSON.parse(response)
   localStorage.setItem("access", tokens.access)
   localStorage.setItem("refresh", tokens.refresh)
+}
+
+const resetData = () => {
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
 }
