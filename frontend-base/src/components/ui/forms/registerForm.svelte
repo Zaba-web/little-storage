@@ -3,6 +3,7 @@
   import FormInput from "./form-input.svelte";
   import { validators } from "../../../utils/validator";
   import { createUser, CREATED, ALREADY_EXISTS } from "../../../api/userClient";
+  import { MessageStore, createMessage } from "../../../stores/message";
 
   $: formValid = false;
   $: step = 1;
@@ -44,14 +45,27 @@
         const result = await createUser(formData);
 
         if (result == CREATED) {
-          // TODO: show created popup
-          alert("Registered");
+          $MessageStore = createMessage(
+            __("Request Sent"),
+            __("Your registration request has been sent. Wait for approval."),
+          );
         } else if (result == ALREADY_EXISTS) {
-          alert("User this this email already registers");
+          $MessageStore = createMessage(
+            __("Already Exists"),
+            __("User with this email already registered."),
+          );
         } else {
-          alert("Unknown error occured");
+          $MessageStore = createMessage(
+            __("Error"),
+            __("Unknown error occured."),
+          );
         }
       })();
+    } else {
+      $MessageStore = createMessage(
+        __("Validation Error"),
+        __("Form is invalid. Check your data"),
+      );
     }
   };
 </script>
@@ -136,9 +150,7 @@
       </button>
     </div>
     <div class={step == 1 && "hidden"}>
-      <button class="button button-accent" type="submit" disabled={!formValid}>
-        Send
-      </button>
+      <button class="button button-accent" type="submit"> Send </button>
     </div>
     <div class={step != 1 && "hidden"}>
       <button
