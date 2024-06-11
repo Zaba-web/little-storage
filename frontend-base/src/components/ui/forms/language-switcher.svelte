@@ -57,7 +57,7 @@
             class="w-4"
           />
           <span
-            class="font-theme-default text-theme-gray hover:text-white font-medium flex items-center gap-2"
+            class="font-theme-default text-theme-gray-dark hover:text-theme-gray font-medium flex items-center gap-2"
           >
             {languageList[language].name}
           </span>

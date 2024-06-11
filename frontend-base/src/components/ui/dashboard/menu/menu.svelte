@@ -40,11 +40,13 @@
   };
 </script>
 
-<div class="mt-8 pl-16 h-5/6 flex flex-col justify-around">
+<div class="pt-8 pl-16 box-border h-full flex flex-col justify-around">
   <strong class="text-white font-theme-default font-extrabold italic text-xl">
     LittleStorage
   </strong>
-  <menu class="text-theme-gray font-theme-default font-medium mt-8 h-full">
+  <menu
+    class="text-theme-gray font-theme-default box-border font-medium mt-8 h-full"
+  >
     {#each menu as item, index}
       <li
         class={"block py-3 pl-3 rounded-lg transition-all mt-2 " +
@@ -64,7 +66,7 @@
   </menu>
   <div class="w-full">
     <Usage />
-    <div class="text-center mt-5">
+    <div class="flex justify-center mt-5">
       <QuickUpload />
     </div>
     <div

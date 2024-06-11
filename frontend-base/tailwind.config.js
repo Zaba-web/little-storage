@@ -13,6 +13,7 @@ export default {
           100: "#0f0f0f"
         },
         "theme-gray": '#d9d9d9',
+        "theme-gray-dark": '#939393',
         "theme-accent": '#4f52bf'
       },
       fontFamily: {
